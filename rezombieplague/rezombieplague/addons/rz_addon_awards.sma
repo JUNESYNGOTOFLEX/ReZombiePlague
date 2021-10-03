@@ -45,7 +45,6 @@ public rz_class_change_post(id, attacker)
 		return;
 
 	new TeamName:winTeam = TEAM_UNASSIGNED;
-	new TeamName:team;
 
 	switch (status)
 	{
@@ -53,14 +52,15 @@ public rz_class_change_post(id, attacker)
 		case WINSTATUS_CTS: winTeam = TEAM_CT;
 	}
 
-	for (new i = 1; i <= MaxClients; i++)
+	for (new i = 1, TeamName:team; i <= MaxClients; i++)
 	{
 		if (!is_user_connected(i))
 			continue;
-
-		team = get_member(i, m_iTeam);
-
-		if (team != TEAM_TERRORIST && team != TEAM_CT)
+		
+		if (!(TEAM_TERRORIST <= (team = get_member(i, m_iTeam)) <= TEAM_CT))
+			continue;
+		
+		if (get_member(i, m_iNumSpawns) < 1) // glithces
 			continue;
 
 		if (winTeam == TEAM_UNASSIGNED)
